@@ -1,0 +1,2 @@
+[Ejemplo de una constante ULONG fuera de rango por ser negativa.]
+algo=-259.

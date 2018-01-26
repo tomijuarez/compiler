@@ -1,0 +1,11 @@
+[Errores semánticos por operar con datos de distintos tipos]
+a:float.
+b:ulong.
+
+[Operaciones varias entre float y ulong]
+a=5,.
+b=87.
+a=a+b.
+b=a-b.
+a=a*b.
+b=b+a/b.

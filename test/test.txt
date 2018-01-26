@@ -1,0 +1,10 @@
+a,b,c:ulong.
+d:float.
+a=6.
+b=2.
+
+d=UL_F(a+b).
+
+if (d == UL_F(8)) then
+	out("comosos").
+end_if.

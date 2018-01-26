@@ -1,0 +1,17 @@
+[Asignación de una constante entera larga sin signo a una variable.]
+bar = 55. 
+
+[Asignación de una constante de punto flotante.]
+foo = 3,25e-10.
+
+[Asignación de una suma de dos variables.]
+maiamee = ricardo + fort.
+
+[Asignación de la resta de dos constantes enteras largas sin signo.]
+foo = 88 - 99.
+
+[Asignación de la multiplicación de dos constantes de punto flotante.]
+bar = 1,25e8 * 8,e-55.
+
+[Asignación de operaciones múltiples con.]
+bar = 11/5+95-88+bar-foo.

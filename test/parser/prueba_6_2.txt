@@ -1,0 +1,19 @@
+[Este ejemplo da cuenta de distintas formas de error en la sentencia LET.]
+
+[Falta '.']
+LET foo = bar
+
+[Falta identificador/constante/expresión en el lado derecho]
+let foo = .
+
+[Falta '=']
+LET foo bar.
+
+[Falta identificador en el lado izquierdo.]
+LET = bar.
+
+[Constante en el lado izquierdo.]
+LET 55 = bar.
+
+[Expresión en el lado izquierdo.]
+LET foo + otracosa = bar.

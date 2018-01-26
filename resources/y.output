@@ -1,0 +1,2415 @@
+   0  $accept : program $end
+
+   1  program :
+   2          | statements
+
+   3  statements : declarative_statements
+   4             | executional_statements
+   5             | statements declarative_statements
+   6             | statements executional_statements
+
+   7  declarative_statements : var_list ':' type '.'
+   8                         | var_list ':' type
+   9                         | var_list ':' '.'
+  10                         | var_list type '.'
+  11                         | ':' type '.'
+
+  12  $$1 :
+
+  13  declarative_statements : var_list type $$1 ':' '.'
+
+  14  var_list : ID
+  15           | var_list ',' ID
+  16           | var_list ID
+  17           | ',' ID
+
+  18  type : ULONG
+  19       | FLOAT
+
+  20  executional_statements : if_statement
+  21                         | if_else_statement
+  22                         | assignation_statement
+
+  23  if_statement : IF '(' condition ')' THEN executional_statements END_IF '.'
+  24               | IF '(' condition ')' THEN explicit_delimited_execution_block END_IF '.'
+  25               | IF '(' condition ')' THEN executional_statements END_IF
+  26               | IF '(' condition ')' THEN executional_statements error '.'
+  27               | IF '(' condition ')' THEN END_IF '.'
+  28               | IF '(' condition ')' executional_statements END_IF '.'
+  29               | IF '(' condition THEN executional_statements END_IF '.'
+  30               | IF '(' ')' THEN executional_statements END_IF '.'
+  31               | IF condition ')' THEN executional_statements END_IF '.'
+  32               | '(' condition ')' THEN executional_statements END_IF '.'
+  33               | IF '(' condition ')' THEN explicit_delimited_execution_block END_IF
+  34               | IF '(' condition ')' THEN explicit_delimited_execution_block error '.'
+  35               | IF '(' condition ')' explicit_delimited_execution_block END_IF '.'
+  36               | IF '(' condition THEN explicit_delimited_execution_block END_IF '.'
+  37               | IF '(' ')' THEN explicit_delimited_execution_block END_IF '.'
+  38               | IF condition ')' THEN explicit_delimited_execution_block END_IF '.'
+  39               | '(' condition ')' THEN explicit_delimited_execution_block END_IF '.'
+
+  40  if_else_statement : IF '(' condition ')' THEN executional_statements ELSE executional_statements END_IF '.'
+  41                    | IF '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'
+  42                    | IF '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'
+  43                    | IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'
+  44                    | IF '(' condition ')' THEN executional_statements ELSE executional_statements END_IF
+  45                    | IF '(' condition ')' THEN executional_statements ELSE executional_statements error '.'
+  46                    | IF '(' condition ')' THEN executional_statements ELSE END_IF '.'
+  47                    | IF '(' condition ')' THEN ELSE executional_statements END_IF '.'
+  48                    | IF '(' condition ')' executional_statements ELSE executional_statements END_IF '.'
+  49                    | IF '(' condition THEN executional_statements ELSE executional_statements END_IF '.'
+  50                    | IF '(' ')' THEN executional_statements ELSE executional_statements END_IF '.'
+  51                    | IF condition ')' THEN executional_statements ELSE executional_statements END_IF '.'
+  52                    | '(' condition ')' THEN executional_statements ELSE executional_statements END_IF '.'
+  53                    | IF '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF
+  54                    | IF '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block error '.'
+  55                    | IF '(' condition ')' THEN ELSE explicit_delimited_execution_block END_IF '.'
+  56                    | IF '(' condition ')' executional_statements ELSE explicit_delimited_execution_block END_IF '.'
+  57                    | IF '(' condition THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'
+  58                    | IF '(' ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'
+  59                    | IF condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'
+  60                    | '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'
+  61                    | IF '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF
+  62                    | IF '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements error '.'
+  63                    | IF '(' condition ')' THEN explicit_delimited_execution_block ELSE END_IF '.'
+  64                    | IF '(' condition ')' explicit_delimited_execution_block ELSE executional_statements END_IF '.'
+  65                    | IF '(' condition THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'
+  66                    | IF '(' ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'
+  67                    | IF condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'
+  68                    | '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'
+  69                    | IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF
+  70                    | IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error '.'
+  71                    | IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error END_IF '.'
+  72                    | IF '(' condition ')' explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'
+  73                    | IF '(' condition THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'
+  74                    | IF '(' ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'
+  75                    | IF condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'
+  76                    | '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'
+
+  77  explicit_delimited_execution_block : BEGIN execution_block END '.'
+
+  78  execution_block : execution_block executional_statements
+
+  79  assignation_statement : LET ID '=' expression '.'
+
+  80  condition : expression EQUAL expression
+  81            | expression '>' expression
+  82            | expression '<' expression
+  83            | expression GREATER_EQUAL expression
+  84            | expression LESS_EQUAL expression
+  85            | expression NOT_EQUAL expression
+
+  86  expression : expression '+' term
+  87             | expression '-' term
+  88             | term
+
+  89  term : term '*' factor
+  90       | term '/' factor
+  91       | factor
+
+  92  factor : ID
+  93         | NUMERIC_CONST
+
+state 0
+	$accept : . program $end  (0)
+	program : .  (1)
+
+	ID  shift 1
+	IF  shift 2
+	LET  shift 3
+	':'  shift 4
+	','  shift 5
+	'('  shift 6
+	$end  reduce 1
+
+	program  goto 7
+	statements  goto 8
+	declarative_statements  goto 9
+	executional_statements  goto 10
+	var_list  goto 11
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+
+
+state 1
+	var_list : ID .  (14)
+
+	.  reduce 14
+
+
+state 2
+	if_statement : IF . '(' condition ')' THEN executional_statements END_IF '.'  (23)
+	if_statement : IF . '(' condition ')' THEN explicit_delimited_execution_block END_IF '.'  (24)
+	if_statement : IF . '(' condition ')' THEN executional_statements END_IF  (25)
+	if_statement : IF . '(' condition ')' THEN executional_statements error '.'  (26)
+	if_statement : IF . '(' condition ')' THEN END_IF '.'  (27)
+	if_statement : IF . '(' condition ')' executional_statements END_IF '.'  (28)
+	if_statement : IF . '(' condition THEN executional_statements END_IF '.'  (29)
+	if_statement : IF . '(' ')' THEN executional_statements END_IF '.'  (30)
+	if_statement : IF . condition ')' THEN executional_statements END_IF '.'  (31)
+	if_statement : IF . '(' condition ')' THEN explicit_delimited_execution_block END_IF  (33)
+	if_statement : IF . '(' condition ')' THEN explicit_delimited_execution_block error '.'  (34)
+	if_statement : IF . '(' condition ')' explicit_delimited_execution_block END_IF '.'  (35)
+	if_statement : IF . '(' condition THEN explicit_delimited_execution_block END_IF '.'  (36)
+	if_statement : IF . '(' ')' THEN explicit_delimited_execution_block END_IF '.'  (37)
+	if_statement : IF . condition ')' THEN explicit_delimited_execution_block END_IF '.'  (38)
+	if_else_statement : IF . '(' condition ')' THEN executional_statements ELSE executional_statements END_IF '.'  (40)
+	if_else_statement : IF . '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (41)
+	if_else_statement : IF . '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (42)
+	if_else_statement : IF . '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (43)
+	if_else_statement : IF . '(' condition ')' THEN executional_statements ELSE executional_statements END_IF  (44)
+	if_else_statement : IF . '(' condition ')' THEN executional_statements ELSE executional_statements error '.'  (45)
+	if_else_statement : IF . '(' condition ')' THEN executional_statements ELSE END_IF '.'  (46)
+	if_else_statement : IF . '(' condition ')' THEN ELSE executional_statements END_IF '.'  (47)
+	if_else_statement : IF . '(' condition ')' executional_statements ELSE executional_statements END_IF '.'  (48)
+	if_else_statement : IF . '(' condition THEN executional_statements ELSE executional_statements END_IF '.'  (49)
+	if_else_statement : IF . '(' ')' THEN executional_statements ELSE executional_statements END_IF '.'  (50)
+	if_else_statement : IF . condition ')' THEN executional_statements ELSE executional_statements END_IF '.'  (51)
+	if_else_statement : IF . '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF  (53)
+	if_else_statement : IF . '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block error '.'  (54)
+	if_else_statement : IF . '(' condition ')' THEN ELSE explicit_delimited_execution_block END_IF '.'  (55)
+	if_else_statement : IF . '(' condition ')' executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (56)
+	if_else_statement : IF . '(' condition THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (57)
+	if_else_statement : IF . '(' ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (58)
+	if_else_statement : IF . condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (59)
+	if_else_statement : IF . '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF  (61)
+	if_else_statement : IF . '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements error '.'  (62)
+	if_else_statement : IF . '(' condition ')' THEN explicit_delimited_execution_block ELSE END_IF '.'  (63)
+	if_else_statement : IF . '(' condition ')' explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (64)
+	if_else_statement : IF . '(' condition THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (65)
+	if_else_statement : IF . '(' ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (66)
+	if_else_statement : IF . condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (67)
+	if_else_statement : IF . '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF  (69)
+	if_else_statement : IF . '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error '.'  (70)
+	if_else_statement : IF . '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error END_IF '.'  (71)
+	if_else_statement : IF . '(' condition ')' explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (72)
+	if_else_statement : IF . '(' condition THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (73)
+	if_else_statement : IF . '(' ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (74)
+	if_else_statement : IF . condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (75)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	'('  shift 17
+	.  error
+
+	condition  goto 18
+	expression  goto 19
+	term  goto 20
+	factor  goto 21
+
+
+state 3
+	assignation_statement : LET . ID '=' expression '.'  (79)
+
+	ID  shift 22
+	.  error
+
+
+state 4
+	declarative_statements : ':' . type '.'  (11)
+
+	FLOAT  shift 23
+	ULONG  shift 24
+	.  error
+
+	type  goto 25
+
+
+state 5
+	var_list : ',' . ID  (17)
+
+	ID  shift 26
+	.  error
+
+
+state 6
+	if_statement : '(' . condition ')' THEN executional_statements END_IF '.'  (32)
+	if_statement : '(' . condition ')' THEN explicit_delimited_execution_block END_IF '.'  (39)
+	if_else_statement : '(' . condition ')' THEN executional_statements ELSE executional_statements END_IF '.'  (52)
+	if_else_statement : '(' . condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (60)
+	if_else_statement : '(' . condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (68)
+	if_else_statement : '(' . condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (76)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	.  error
+
+	condition  goto 27
+	expression  goto 19
+	term  goto 20
+	factor  goto 21
+
+
+state 7
+	$accept : program . $end  (0)
+
+	$end  accept
+
+
+state 8
+	program : statements .  (2)
+	statements : statements . declarative_statements  (5)
+	statements : statements . executional_statements  (6)
+
+	ID  shift 1
+	IF  shift 2
+	LET  shift 3
+	':'  shift 4
+	','  shift 5
+	'('  shift 6
+	$end  reduce 2
+
+	declarative_statements  goto 28
+	executional_statements  goto 29
+	var_list  goto 11
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+
+
+state 9
+	statements : declarative_statements .  (3)
+
+	.  reduce 3
+
+
+state 10
+	statements : executional_statements .  (4)
+
+	.  reduce 4
+
+
+state 11
+	declarative_statements : var_list . ':' type '.'  (7)
+	declarative_statements : var_list . ':' type  (8)
+	declarative_statements : var_list . ':' '.'  (9)
+	declarative_statements : var_list . type '.'  (10)
+	declarative_statements : var_list . type $$1 ':' '.'  (13)
+	var_list : var_list . ',' ID  (15)
+	var_list : var_list . ID  (16)
+
+	ID  shift 30
+	FLOAT  shift 23
+	ULONG  shift 24
+	':'  shift 31
+	','  shift 32
+	.  error
+
+	type  goto 33
+
+
+state 12
+	executional_statements : if_statement .  (20)
+
+	.  reduce 20
+
+
+state 13
+	executional_statements : if_else_statement .  (21)
+
+	.  reduce 21
+
+
+state 14
+	executional_statements : assignation_statement .  (22)
+
+	.  reduce 22
+
+
+state 15
+	factor : ID .  (92)
+
+	.  reduce 92
+
+
+state 16
+	factor : NUMERIC_CONST .  (93)
+
+	.  reduce 93
+
+
+state 17
+	if_statement : IF '(' . condition ')' THEN executional_statements END_IF '.'  (23)
+	if_statement : IF '(' . condition ')' THEN explicit_delimited_execution_block END_IF '.'  (24)
+	if_statement : IF '(' . condition ')' THEN executional_statements END_IF  (25)
+	if_statement : IF '(' . condition ')' THEN executional_statements error '.'  (26)
+	if_statement : IF '(' . condition ')' THEN END_IF '.'  (27)
+	if_statement : IF '(' . condition ')' executional_statements END_IF '.'  (28)
+	if_statement : IF '(' . condition THEN executional_statements END_IF '.'  (29)
+	if_statement : IF '(' . ')' THEN executional_statements END_IF '.'  (30)
+	if_statement : IF '(' . condition ')' THEN explicit_delimited_execution_block END_IF  (33)
+	if_statement : IF '(' . condition ')' THEN explicit_delimited_execution_block error '.'  (34)
+	if_statement : IF '(' . condition ')' explicit_delimited_execution_block END_IF '.'  (35)
+	if_statement : IF '(' . condition THEN explicit_delimited_execution_block END_IF '.'  (36)
+	if_statement : IF '(' . ')' THEN explicit_delimited_execution_block END_IF '.'  (37)
+	if_else_statement : IF '(' . condition ')' THEN executional_statements ELSE executional_statements END_IF '.'  (40)
+	if_else_statement : IF '(' . condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (41)
+	if_else_statement : IF '(' . condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (42)
+	if_else_statement : IF '(' . condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (43)
+	if_else_statement : IF '(' . condition ')' THEN executional_statements ELSE executional_statements END_IF  (44)
+	if_else_statement : IF '(' . condition ')' THEN executional_statements ELSE executional_statements error '.'  (45)
+	if_else_statement : IF '(' . condition ')' THEN executional_statements ELSE END_IF '.'  (46)
+	if_else_statement : IF '(' . condition ')' THEN ELSE executional_statements END_IF '.'  (47)
+	if_else_statement : IF '(' . condition ')' executional_statements ELSE executional_statements END_IF '.'  (48)
+	if_else_statement : IF '(' . condition THEN executional_statements ELSE executional_statements END_IF '.'  (49)
+	if_else_statement : IF '(' . ')' THEN executional_statements ELSE executional_statements END_IF '.'  (50)
+	if_else_statement : IF '(' . condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF  (53)
+	if_else_statement : IF '(' . condition ')' THEN executional_statements ELSE explicit_delimited_execution_block error '.'  (54)
+	if_else_statement : IF '(' . condition ')' THEN ELSE explicit_delimited_execution_block END_IF '.'  (55)
+	if_else_statement : IF '(' . condition ')' executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (56)
+	if_else_statement : IF '(' . condition THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (57)
+	if_else_statement : IF '(' . ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (58)
+	if_else_statement : IF '(' . condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF  (61)
+	if_else_statement : IF '(' . condition ')' THEN explicit_delimited_execution_block ELSE executional_statements error '.'  (62)
+	if_else_statement : IF '(' . condition ')' THEN explicit_delimited_execution_block ELSE END_IF '.'  (63)
+	if_else_statement : IF '(' . condition ')' explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (64)
+	if_else_statement : IF '(' . condition THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (65)
+	if_else_statement : IF '(' . ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (66)
+	if_else_statement : IF '(' . condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF  (69)
+	if_else_statement : IF '(' . condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error '.'  (70)
+	if_else_statement : IF '(' . condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error END_IF '.'  (71)
+	if_else_statement : IF '(' . condition ')' explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (72)
+	if_else_statement : IF '(' . condition THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (73)
+	if_else_statement : IF '(' . ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (74)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	')'  shift 34
+	.  error
+
+	condition  goto 35
+	expression  goto 19
+	term  goto 20
+	factor  goto 21
+
+
+state 18
+	if_statement : IF condition . ')' THEN executional_statements END_IF '.'  (31)
+	if_statement : IF condition . ')' THEN explicit_delimited_execution_block END_IF '.'  (38)
+	if_else_statement : IF condition . ')' THEN executional_statements ELSE executional_statements END_IF '.'  (51)
+	if_else_statement : IF condition . ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (59)
+	if_else_statement : IF condition . ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (67)
+	if_else_statement : IF condition . ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (75)
+
+	')'  shift 36
+	.  error
+
+
+state 19
+	condition : expression . EQUAL expression  (80)
+	condition : expression . '>' expression  (81)
+	condition : expression . '<' expression  (82)
+	condition : expression . GREATER_EQUAL expression  (83)
+	condition : expression . LESS_EQUAL expression  (84)
+	condition : expression . NOT_EQUAL expression  (85)
+	expression : expression . '+' term  (86)
+	expression : expression . '-' term  (87)
+
+	GREATER_EQUAL  shift 37
+	LESS_EQUAL  shift 38
+	EQUAL  shift 39
+	NOT_EQUAL  shift 40
+	'>'  shift 41
+	'<'  shift 42
+	'+'  shift 43
+	'-'  shift 44
+	.  error
+
+
+state 20
+	expression : term .  (88)
+	term : term . '*' factor  (89)
+	term : term . '/' factor  (90)
+
+	'*'  shift 45
+	'/'  shift 46
+	GREATER_EQUAL  reduce 88
+	LESS_EQUAL  reduce 88
+	EQUAL  reduce 88
+	NOT_EQUAL  reduce 88
+	THEN  reduce 88
+	'.'  reduce 88
+	')'  reduce 88
+	'>'  reduce 88
+	'<'  reduce 88
+	'+'  reduce 88
+	'-'  reduce 88
+
+
+state 21
+	term : factor .  (91)
+
+	.  reduce 91
+
+
+state 22
+	assignation_statement : LET ID . '=' expression '.'  (79)
+
+	'='  shift 47
+	.  error
+
+
+state 23
+	type : FLOAT .  (19)
+
+	.  reduce 19
+
+
+state 24
+	type : ULONG .  (18)
+
+	.  reduce 18
+
+
+state 25
+	declarative_statements : ':' type . '.'  (11)
+
+	'.'  shift 48
+	.  error
+
+
+state 26
+	var_list : ',' ID .  (17)
+
+	.  reduce 17
+
+
+state 27
+	if_statement : '(' condition . ')' THEN executional_statements END_IF '.'  (32)
+	if_statement : '(' condition . ')' THEN explicit_delimited_execution_block END_IF '.'  (39)
+	if_else_statement : '(' condition . ')' THEN executional_statements ELSE executional_statements END_IF '.'  (52)
+	if_else_statement : '(' condition . ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (60)
+	if_else_statement : '(' condition . ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (68)
+	if_else_statement : '(' condition . ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (76)
+
+	')'  shift 49
+	.  error
+
+
+state 28
+	statements : statements declarative_statements .  (5)
+
+	.  reduce 5
+
+
+state 29
+	statements : statements executional_statements .  (6)
+
+	.  reduce 6
+
+
+state 30
+	var_list : var_list ID .  (16)
+
+	.  reduce 16
+
+
+state 31
+	declarative_statements : var_list ':' . type '.'  (7)
+	declarative_statements : var_list ':' . type  (8)
+	declarative_statements : var_list ':' . '.'  (9)
+
+	FLOAT  shift 23
+	ULONG  shift 24
+	'.'  shift 50
+	.  error
+
+	type  goto 51
+
+
+state 32
+	var_list : var_list ',' . ID  (15)
+
+	ID  shift 52
+	.  error
+
+
+state 33
+	declarative_statements : var_list type . '.'  (10)
+	declarative_statements : var_list type . $$1 ':' '.'  (13)
+	$$1 : .  (12)
+
+	'.'  shift 53
+	':'  reduce 12
+
+	$$1  goto 54
+
+
+state 34
+	if_statement : IF '(' ')' . THEN executional_statements END_IF '.'  (30)
+	if_statement : IF '(' ')' . THEN explicit_delimited_execution_block END_IF '.'  (37)
+	if_else_statement : IF '(' ')' . THEN executional_statements ELSE executional_statements END_IF '.'  (50)
+	if_else_statement : IF '(' ')' . THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (58)
+	if_else_statement : IF '(' ')' . THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (66)
+	if_else_statement : IF '(' ')' . THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (74)
+
+	THEN  shift 55
+	.  error
+
+
+state 35
+	if_statement : IF '(' condition . ')' THEN executional_statements END_IF '.'  (23)
+	if_statement : IF '(' condition . ')' THEN explicit_delimited_execution_block END_IF '.'  (24)
+	if_statement : IF '(' condition . ')' THEN executional_statements END_IF  (25)
+	if_statement : IF '(' condition . ')' THEN executional_statements error '.'  (26)
+	if_statement : IF '(' condition . ')' THEN END_IF '.'  (27)
+	if_statement : IF '(' condition . ')' executional_statements END_IF '.'  (28)
+	if_statement : IF '(' condition . THEN executional_statements END_IF '.'  (29)
+	if_statement : IF '(' condition . ')' THEN explicit_delimited_execution_block END_IF  (33)
+	if_statement : IF '(' condition . ')' THEN explicit_delimited_execution_block error '.'  (34)
+	if_statement : IF '(' condition . ')' explicit_delimited_execution_block END_IF '.'  (35)
+	if_statement : IF '(' condition . THEN explicit_delimited_execution_block END_IF '.'  (36)
+	if_else_statement : IF '(' condition . ')' THEN executional_statements ELSE executional_statements END_IF '.'  (40)
+	if_else_statement : IF '(' condition . ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (41)
+	if_else_statement : IF '(' condition . ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (42)
+	if_else_statement : IF '(' condition . ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (43)
+	if_else_statement : IF '(' condition . ')' THEN executional_statements ELSE executional_statements END_IF  (44)
+	if_else_statement : IF '(' condition . ')' THEN executional_statements ELSE executional_statements error '.'  (45)
+	if_else_statement : IF '(' condition . ')' THEN executional_statements ELSE END_IF '.'  (46)
+	if_else_statement : IF '(' condition . ')' THEN ELSE executional_statements END_IF '.'  (47)
+	if_else_statement : IF '(' condition . ')' executional_statements ELSE executional_statements END_IF '.'  (48)
+	if_else_statement : IF '(' condition . THEN executional_statements ELSE executional_statements END_IF '.'  (49)
+	if_else_statement : IF '(' condition . ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF  (53)
+	if_else_statement : IF '(' condition . ')' THEN executional_statements ELSE explicit_delimited_execution_block error '.'  (54)
+	if_else_statement : IF '(' condition . ')' THEN ELSE explicit_delimited_execution_block END_IF '.'  (55)
+	if_else_statement : IF '(' condition . ')' executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (56)
+	if_else_statement : IF '(' condition . THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (57)
+	if_else_statement : IF '(' condition . ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF  (61)
+	if_else_statement : IF '(' condition . ')' THEN explicit_delimited_execution_block ELSE executional_statements error '.'  (62)
+	if_else_statement : IF '(' condition . ')' THEN explicit_delimited_execution_block ELSE END_IF '.'  (63)
+	if_else_statement : IF '(' condition . ')' explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (64)
+	if_else_statement : IF '(' condition . THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (65)
+	if_else_statement : IF '(' condition . ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF  (69)
+	if_else_statement : IF '(' condition . ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error '.'  (70)
+	if_else_statement : IF '(' condition . ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error END_IF '.'  (71)
+	if_else_statement : IF '(' condition . ')' explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (72)
+	if_else_statement : IF '(' condition . THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (73)
+
+	THEN  shift 56
+	')'  shift 57
+	.  error
+
+
+state 36
+	if_statement : IF condition ')' . THEN executional_statements END_IF '.'  (31)
+	if_statement : IF condition ')' . THEN explicit_delimited_execution_block END_IF '.'  (38)
+	if_else_statement : IF condition ')' . THEN executional_statements ELSE executional_statements END_IF '.'  (51)
+	if_else_statement : IF condition ')' . THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (59)
+	if_else_statement : IF condition ')' . THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (67)
+	if_else_statement : IF condition ')' . THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (75)
+
+	THEN  shift 58
+	.  error
+
+
+state 37
+	condition : expression GREATER_EQUAL . expression  (83)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	.  error
+
+	expression  goto 59
+	term  goto 20
+	factor  goto 21
+
+
+state 38
+	condition : expression LESS_EQUAL . expression  (84)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	.  error
+
+	expression  goto 60
+	term  goto 20
+	factor  goto 21
+
+
+state 39
+	condition : expression EQUAL . expression  (80)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	.  error
+
+	expression  goto 61
+	term  goto 20
+	factor  goto 21
+
+
+state 40
+	condition : expression NOT_EQUAL . expression  (85)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	.  error
+
+	expression  goto 62
+	term  goto 20
+	factor  goto 21
+
+
+state 41
+	condition : expression '>' . expression  (81)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	.  error
+
+	expression  goto 63
+	term  goto 20
+	factor  goto 21
+
+
+state 42
+	condition : expression '<' . expression  (82)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	.  error
+
+	expression  goto 64
+	term  goto 20
+	factor  goto 21
+
+
+state 43
+	expression : expression '+' . term  (86)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	.  error
+
+	term  goto 65
+	factor  goto 21
+
+
+state 44
+	expression : expression '-' . term  (87)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	.  error
+
+	term  goto 66
+	factor  goto 21
+
+
+state 45
+	term : term '*' . factor  (89)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	.  error
+
+	factor  goto 67
+
+
+state 46
+	term : term '/' . factor  (90)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	.  error
+
+	factor  goto 68
+
+
+state 47
+	assignation_statement : LET ID '=' . expression '.'  (79)
+
+	ID  shift 15
+	NUMERIC_CONST  shift 16
+	.  error
+
+	expression  goto 69
+	term  goto 20
+	factor  goto 21
+
+
+state 48
+	declarative_statements : ':' type '.' .  (11)
+
+	.  reduce 11
+
+
+state 49
+	if_statement : '(' condition ')' . THEN executional_statements END_IF '.'  (32)
+	if_statement : '(' condition ')' . THEN explicit_delimited_execution_block END_IF '.'  (39)
+	if_else_statement : '(' condition ')' . THEN executional_statements ELSE executional_statements END_IF '.'  (52)
+	if_else_statement : '(' condition ')' . THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (60)
+	if_else_statement : '(' condition ')' . THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (68)
+	if_else_statement : '(' condition ')' . THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (76)
+
+	THEN  shift 70
+	.  error
+
+
+state 50
+	declarative_statements : var_list ':' '.' .  (9)
+
+	.  reduce 9
+
+
+state 51
+	declarative_statements : var_list ':' type . '.'  (7)
+	declarative_statements : var_list ':' type .  (8)
+
+	'.'  shift 71
+	$end  reduce 8
+	ID  reduce 8
+	IF  reduce 8
+	LET  reduce 8
+	':'  reduce 8
+	','  reduce 8
+	'('  reduce 8
+
+
+state 52
+	var_list : var_list ',' ID .  (15)
+
+	.  reduce 15
+
+
+state 53
+	declarative_statements : var_list type '.' .  (10)
+
+	.  reduce 10
+
+
+state 54
+	declarative_statements : var_list type $$1 . ':' '.'  (13)
+
+	':'  shift 72
+	.  error
+
+
+state 55
+	if_statement : IF '(' ')' THEN . executional_statements END_IF '.'  (30)
+	if_statement : IF '(' ')' THEN . explicit_delimited_execution_block END_IF '.'  (37)
+	if_else_statement : IF '(' ')' THEN . executional_statements ELSE executional_statements END_IF '.'  (50)
+	if_else_statement : IF '(' ')' THEN . executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (58)
+	if_else_statement : IF '(' ')' THEN . explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (66)
+	if_else_statement : IF '(' ')' THEN . explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (74)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 74
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 75
+
+
+state 56
+	if_statement : IF '(' condition THEN . executional_statements END_IF '.'  (29)
+	if_statement : IF '(' condition THEN . explicit_delimited_execution_block END_IF '.'  (36)
+	if_else_statement : IF '(' condition THEN . executional_statements ELSE executional_statements END_IF '.'  (49)
+	if_else_statement : IF '(' condition THEN . executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (57)
+	if_else_statement : IF '(' condition THEN . explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (65)
+	if_else_statement : IF '(' condition THEN . explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (73)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 76
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 77
+
+
+state 57
+	if_statement : IF '(' condition ')' . THEN executional_statements END_IF '.'  (23)
+	if_statement : IF '(' condition ')' . THEN explicit_delimited_execution_block END_IF '.'  (24)
+	if_statement : IF '(' condition ')' . THEN executional_statements END_IF  (25)
+	if_statement : IF '(' condition ')' . THEN executional_statements error '.'  (26)
+	if_statement : IF '(' condition ')' . THEN END_IF '.'  (27)
+	if_statement : IF '(' condition ')' . executional_statements END_IF '.'  (28)
+	if_statement : IF '(' condition ')' . THEN explicit_delimited_execution_block END_IF  (33)
+	if_statement : IF '(' condition ')' . THEN explicit_delimited_execution_block error '.'  (34)
+	if_statement : IF '(' condition ')' . explicit_delimited_execution_block END_IF '.'  (35)
+	if_else_statement : IF '(' condition ')' . THEN executional_statements ELSE executional_statements END_IF '.'  (40)
+	if_else_statement : IF '(' condition ')' . THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (41)
+	if_else_statement : IF '(' condition ')' . THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (42)
+	if_else_statement : IF '(' condition ')' . THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (43)
+	if_else_statement : IF '(' condition ')' . THEN executional_statements ELSE executional_statements END_IF  (44)
+	if_else_statement : IF '(' condition ')' . THEN executional_statements ELSE executional_statements error '.'  (45)
+	if_else_statement : IF '(' condition ')' . THEN executional_statements ELSE END_IF '.'  (46)
+	if_else_statement : IF '(' condition ')' . THEN ELSE executional_statements END_IF '.'  (47)
+	if_else_statement : IF '(' condition ')' . executional_statements ELSE executional_statements END_IF '.'  (48)
+	if_else_statement : IF '(' condition ')' . THEN executional_statements ELSE explicit_delimited_execution_block END_IF  (53)
+	if_else_statement : IF '(' condition ')' . THEN executional_statements ELSE explicit_delimited_execution_block error '.'  (54)
+	if_else_statement : IF '(' condition ')' . THEN ELSE explicit_delimited_execution_block END_IF '.'  (55)
+	if_else_statement : IF '(' condition ')' . executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (56)
+	if_else_statement : IF '(' condition ')' . THEN explicit_delimited_execution_block ELSE executional_statements END_IF  (61)
+	if_else_statement : IF '(' condition ')' . THEN explicit_delimited_execution_block ELSE executional_statements error '.'  (62)
+	if_else_statement : IF '(' condition ')' . THEN explicit_delimited_execution_block ELSE END_IF '.'  (63)
+	if_else_statement : IF '(' condition ')' . explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (64)
+	if_else_statement : IF '(' condition ')' . THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF  (69)
+	if_else_statement : IF '(' condition ')' . THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error '.'  (70)
+	if_else_statement : IF '(' condition ')' . THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error END_IF '.'  (71)
+	if_else_statement : IF '(' condition ')' . explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (72)
+
+	IF  shift 2
+	THEN  shift 78
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 79
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 80
+
+
+state 58
+	if_statement : IF condition ')' THEN . executional_statements END_IF '.'  (31)
+	if_statement : IF condition ')' THEN . explicit_delimited_execution_block END_IF '.'  (38)
+	if_else_statement : IF condition ')' THEN . executional_statements ELSE executional_statements END_IF '.'  (51)
+	if_else_statement : IF condition ')' THEN . executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (59)
+	if_else_statement : IF condition ')' THEN . explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (67)
+	if_else_statement : IF condition ')' THEN . explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (75)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 81
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 82
+
+
+state 59
+	condition : expression GREATER_EQUAL expression .  (83)
+	expression : expression . '+' term  (86)
+	expression : expression . '-' term  (87)
+
+	'+'  shift 43
+	'-'  shift 44
+	THEN  reduce 83
+	')'  reduce 83
+
+
+state 60
+	condition : expression LESS_EQUAL expression .  (84)
+	expression : expression . '+' term  (86)
+	expression : expression . '-' term  (87)
+
+	'+'  shift 43
+	'-'  shift 44
+	THEN  reduce 84
+	')'  reduce 84
+
+
+state 61
+	condition : expression EQUAL expression .  (80)
+	expression : expression . '+' term  (86)
+	expression : expression . '-' term  (87)
+
+	'+'  shift 43
+	'-'  shift 44
+	THEN  reduce 80
+	')'  reduce 80
+
+
+state 62
+	condition : expression NOT_EQUAL expression .  (85)
+	expression : expression . '+' term  (86)
+	expression : expression . '-' term  (87)
+
+	'+'  shift 43
+	'-'  shift 44
+	THEN  reduce 85
+	')'  reduce 85
+
+
+state 63
+	condition : expression '>' expression .  (81)
+	expression : expression . '+' term  (86)
+	expression : expression . '-' term  (87)
+
+	'+'  shift 43
+	'-'  shift 44
+	THEN  reduce 81
+	')'  reduce 81
+
+
+state 64
+	condition : expression '<' expression .  (82)
+	expression : expression . '+' term  (86)
+	expression : expression . '-' term  (87)
+
+	'+'  shift 43
+	'-'  shift 44
+	THEN  reduce 82
+	')'  reduce 82
+
+
+state 65
+	expression : expression '+' term .  (86)
+	term : term . '*' factor  (89)
+	term : term . '/' factor  (90)
+
+	'*'  shift 45
+	'/'  shift 46
+	GREATER_EQUAL  reduce 86
+	LESS_EQUAL  reduce 86
+	EQUAL  reduce 86
+	NOT_EQUAL  reduce 86
+	THEN  reduce 86
+	'.'  reduce 86
+	')'  reduce 86
+	'>'  reduce 86
+	'<'  reduce 86
+	'+'  reduce 86
+	'-'  reduce 86
+
+
+state 66
+	expression : expression '-' term .  (87)
+	term : term . '*' factor  (89)
+	term : term . '/' factor  (90)
+
+	'*'  shift 45
+	'/'  shift 46
+	GREATER_EQUAL  reduce 87
+	LESS_EQUAL  reduce 87
+	EQUAL  reduce 87
+	NOT_EQUAL  reduce 87
+	THEN  reduce 87
+	'.'  reduce 87
+	')'  reduce 87
+	'>'  reduce 87
+	'<'  reduce 87
+	'+'  reduce 87
+	'-'  reduce 87
+
+
+state 67
+	term : term '*' factor .  (89)
+
+	.  reduce 89
+
+
+state 68
+	term : term '/' factor .  (90)
+
+	.  reduce 90
+
+
+state 69
+	assignation_statement : LET ID '=' expression . '.'  (79)
+	expression : expression . '+' term  (86)
+	expression : expression . '-' term  (87)
+
+	'.'  shift 83
+	'+'  shift 43
+	'-'  shift 44
+	.  error
+
+
+state 70
+	if_statement : '(' condition ')' THEN . executional_statements END_IF '.'  (32)
+	if_statement : '(' condition ')' THEN . explicit_delimited_execution_block END_IF '.'  (39)
+	if_else_statement : '(' condition ')' THEN . executional_statements ELSE executional_statements END_IF '.'  (52)
+	if_else_statement : '(' condition ')' THEN . executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (60)
+	if_else_statement : '(' condition ')' THEN . explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (68)
+	if_else_statement : '(' condition ')' THEN . explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (76)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 84
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 85
+
+
+state 71
+	declarative_statements : var_list ':' type '.' .  (7)
+
+	.  reduce 7
+
+
+state 72
+	declarative_statements : var_list type $$1 ':' . '.'  (13)
+
+	'.'  shift 86
+	.  error
+
+
+state 73
+	explicit_delimited_execution_block : BEGIN . execution_block END '.'  (77)
+
+
+	execution_block  goto 87
+
+
+state 74
+	if_statement : IF '(' ')' THEN executional_statements . END_IF '.'  (30)
+	if_else_statement : IF '(' ')' THEN executional_statements . ELSE executional_statements END_IF '.'  (50)
+	if_else_statement : IF '(' ')' THEN executional_statements . ELSE explicit_delimited_execution_block END_IF '.'  (58)
+
+	ELSE  shift 88
+	END_IF  shift 89
+	.  error
+
+
+state 75
+	if_statement : IF '(' ')' THEN explicit_delimited_execution_block . END_IF '.'  (37)
+	if_else_statement : IF '(' ')' THEN explicit_delimited_execution_block . ELSE executional_statements END_IF '.'  (66)
+	if_else_statement : IF '(' ')' THEN explicit_delimited_execution_block . ELSE explicit_delimited_execution_block END_IF '.'  (74)
+
+	ELSE  shift 90
+	END_IF  shift 91
+	.  error
+
+
+state 76
+	if_statement : IF '(' condition THEN executional_statements . END_IF '.'  (29)
+	if_else_statement : IF '(' condition THEN executional_statements . ELSE executional_statements END_IF '.'  (49)
+	if_else_statement : IF '(' condition THEN executional_statements . ELSE explicit_delimited_execution_block END_IF '.'  (57)
+
+	ELSE  shift 92
+	END_IF  shift 93
+	.  error
+
+
+state 77
+	if_statement : IF '(' condition THEN explicit_delimited_execution_block . END_IF '.'  (36)
+	if_else_statement : IF '(' condition THEN explicit_delimited_execution_block . ELSE executional_statements END_IF '.'  (65)
+	if_else_statement : IF '(' condition THEN explicit_delimited_execution_block . ELSE explicit_delimited_execution_block END_IF '.'  (73)
+
+	ELSE  shift 94
+	END_IF  shift 95
+	.  error
+
+
+state 78
+	if_statement : IF '(' condition ')' THEN . executional_statements END_IF '.'  (23)
+	if_statement : IF '(' condition ')' THEN . explicit_delimited_execution_block END_IF '.'  (24)
+	if_statement : IF '(' condition ')' THEN . executional_statements END_IF  (25)
+	if_statement : IF '(' condition ')' THEN . executional_statements error '.'  (26)
+	if_statement : IF '(' condition ')' THEN . END_IF '.'  (27)
+	if_statement : IF '(' condition ')' THEN . explicit_delimited_execution_block END_IF  (33)
+	if_statement : IF '(' condition ')' THEN . explicit_delimited_execution_block error '.'  (34)
+	if_else_statement : IF '(' condition ')' THEN . executional_statements ELSE executional_statements END_IF '.'  (40)
+	if_else_statement : IF '(' condition ')' THEN . executional_statements ELSE explicit_delimited_execution_block END_IF '.'  (41)
+	if_else_statement : IF '(' condition ')' THEN . explicit_delimited_execution_block ELSE executional_statements END_IF '.'  (42)
+	if_else_statement : IF '(' condition ')' THEN . explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.'  (43)
+	if_else_statement : IF '(' condition ')' THEN . executional_statements ELSE executional_statements END_IF  (44)
+	if_else_statement : IF '(' condition ')' THEN . executional_statements ELSE executional_statements error '.'  (45)
+	if_else_statement : IF '(' condition ')' THEN . executional_statements ELSE END_IF '.'  (46)
+	if_else_statement : IF '(' condition ')' THEN . ELSE executional_statements END_IF '.'  (47)
+	if_else_statement : IF '(' condition ')' THEN . executional_statements ELSE explicit_delimited_execution_block END_IF  (53)
+	if_else_statement : IF '(' condition ')' THEN . executional_statements ELSE explicit_delimited_execution_block error '.'  (54)
+	if_else_statement : IF '(' condition ')' THEN . ELSE explicit_delimited_execution_block END_IF '.'  (55)
+	if_else_statement : IF '(' condition ')' THEN . explicit_delimited_execution_block ELSE executional_statements END_IF  (61)
+	if_else_statement : IF '(' condition ')' THEN . explicit_delimited_execution_block ELSE executional_statements error '.'  (62)
+	if_else_statement : IF '(' condition ')' THEN . explicit_delimited_execution_block ELSE END_IF '.'  (63)
+	if_else_statement : IF '(' condition ')' THEN . explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF  (69)
+	if_else_statement : IF '(' condition ')' THEN . explicit_delimited_execution_block ELSE explicit_delimited_execution_block error '.'  (70)
+	if_else_statement : IF '(' condition ')' THEN . explicit_delimited_execution_block ELSE explicit_delimited_execution_block error END_IF '.'  (71)
+
+	IF  shift 2
+	ELSE  shift 96
+	BEGIN  shift 73
+	END_IF  shift 97
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 98
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 99
+
+
+state 79
+	if_statement : IF '(' condition ')' executional_statements . END_IF '.'  (28)
+	if_else_statement : IF '(' condition ')' executional_statements . ELSE executional_statements END_IF '.'  (48)
+	if_else_statement : IF '(' condition ')' executional_statements . ELSE explicit_delimited_execution_block END_IF '.'  (56)
+
+	ELSE  shift 100
+	END_IF  shift 101
+	.  error
+
+
+state 80
+	if_statement : IF '(' condition ')' explicit_delimited_execution_block . END_IF '.'  (35)
+	if_else_statement : IF '(' condition ')' explicit_delimited_execution_block . ELSE executional_statements END_IF '.'  (64)
+	if_else_statement : IF '(' condition ')' explicit_delimited_execution_block . ELSE explicit_delimited_execution_block END_IF '.'  (72)
+
+	ELSE  shift 102
+	END_IF  shift 103
+	.  error
+
+
+state 81
+	if_statement : IF condition ')' THEN executional_statements . END_IF '.'  (31)
+	if_else_statement : IF condition ')' THEN executional_statements . ELSE executional_statements END_IF '.'  (51)
+	if_else_statement : IF condition ')' THEN executional_statements . ELSE explicit_delimited_execution_block END_IF '.'  (59)
+
+	ELSE  shift 104
+	END_IF  shift 105
+	.  error
+
+
+state 82
+	if_statement : IF condition ')' THEN explicit_delimited_execution_block . END_IF '.'  (38)
+	if_else_statement : IF condition ')' THEN explicit_delimited_execution_block . ELSE executional_statements END_IF '.'  (67)
+	if_else_statement : IF condition ')' THEN explicit_delimited_execution_block . ELSE explicit_delimited_execution_block END_IF '.'  (75)
+
+	ELSE  shift 106
+	END_IF  shift 107
+	.  error
+
+
+state 83
+	assignation_statement : LET ID '=' expression '.' .  (79)
+
+	.  reduce 79
+
+
+state 84
+	if_statement : '(' condition ')' THEN executional_statements . END_IF '.'  (32)
+	if_else_statement : '(' condition ')' THEN executional_statements . ELSE executional_statements END_IF '.'  (52)
+	if_else_statement : '(' condition ')' THEN executional_statements . ELSE explicit_delimited_execution_block END_IF '.'  (60)
+
+	ELSE  shift 108
+	END_IF  shift 109
+	.  error
+
+
+state 85
+	if_statement : '(' condition ')' THEN explicit_delimited_execution_block . END_IF '.'  (39)
+	if_else_statement : '(' condition ')' THEN explicit_delimited_execution_block . ELSE executional_statements END_IF '.'  (68)
+	if_else_statement : '(' condition ')' THEN explicit_delimited_execution_block . ELSE explicit_delimited_execution_block END_IF '.'  (76)
+
+	ELSE  shift 110
+	END_IF  shift 111
+	.  error
+
+
+state 86
+	declarative_statements : var_list type $$1 ':' '.' .  (13)
+
+	.  reduce 13
+
+
+state 87
+	explicit_delimited_execution_block : BEGIN execution_block . END '.'  (77)
+	execution_block : execution_block . executional_statements  (78)
+
+	IF  shift 2
+	END  shift 112
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 113
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+
+
+state 88
+	if_else_statement : IF '(' ')' THEN executional_statements ELSE . executional_statements END_IF '.'  (50)
+	if_else_statement : IF '(' ')' THEN executional_statements ELSE . explicit_delimited_execution_block END_IF '.'  (58)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 114
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 115
+
+
+state 89
+	if_statement : IF '(' ')' THEN executional_statements END_IF . '.'  (30)
+
+	'.'  shift 116
+	.  error
+
+
+state 90
+	if_else_statement : IF '(' ')' THEN explicit_delimited_execution_block ELSE . executional_statements END_IF '.'  (66)
+	if_else_statement : IF '(' ')' THEN explicit_delimited_execution_block ELSE . explicit_delimited_execution_block END_IF '.'  (74)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 117
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 118
+
+
+state 91
+	if_statement : IF '(' ')' THEN explicit_delimited_execution_block END_IF . '.'  (37)
+
+	'.'  shift 119
+	.  error
+
+
+state 92
+	if_else_statement : IF '(' condition THEN executional_statements ELSE . executional_statements END_IF '.'  (49)
+	if_else_statement : IF '(' condition THEN executional_statements ELSE . explicit_delimited_execution_block END_IF '.'  (57)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 120
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 121
+
+
+state 93
+	if_statement : IF '(' condition THEN executional_statements END_IF . '.'  (29)
+
+	'.'  shift 122
+	.  error
+
+
+state 94
+	if_else_statement : IF '(' condition THEN explicit_delimited_execution_block ELSE . executional_statements END_IF '.'  (65)
+	if_else_statement : IF '(' condition THEN explicit_delimited_execution_block ELSE . explicit_delimited_execution_block END_IF '.'  (73)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 123
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 124
+
+
+state 95
+	if_statement : IF '(' condition THEN explicit_delimited_execution_block END_IF . '.'  (36)
+
+	'.'  shift 125
+	.  error
+
+
+state 96
+	if_else_statement : IF '(' condition ')' THEN ELSE . executional_statements END_IF '.'  (47)
+	if_else_statement : IF '(' condition ')' THEN ELSE . explicit_delimited_execution_block END_IF '.'  (55)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 126
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 127
+
+
+state 97
+	if_statement : IF '(' condition ')' THEN END_IF . '.'  (27)
+
+	'.'  shift 128
+	.  error
+
+
+state 98
+	if_statement : IF '(' condition ')' THEN executional_statements . END_IF '.'  (23)
+	if_statement : IF '(' condition ')' THEN executional_statements . END_IF  (25)
+	if_statement : IF '(' condition ')' THEN executional_statements . error '.'  (26)
+	if_else_statement : IF '(' condition ')' THEN executional_statements . ELSE executional_statements END_IF '.'  (40)
+	if_else_statement : IF '(' condition ')' THEN executional_statements . ELSE explicit_delimited_execution_block END_IF '.'  (41)
+	if_else_statement : IF '(' condition ')' THEN executional_statements . ELSE executional_statements END_IF  (44)
+	if_else_statement : IF '(' condition ')' THEN executional_statements . ELSE executional_statements error '.'  (45)
+	if_else_statement : IF '(' condition ')' THEN executional_statements . ELSE END_IF '.'  (46)
+	if_else_statement : IF '(' condition ')' THEN executional_statements . ELSE explicit_delimited_execution_block END_IF  (53)
+	if_else_statement : IF '(' condition ')' THEN executional_statements . ELSE explicit_delimited_execution_block error '.'  (54)
+
+	error  shift 129
+	ELSE  shift 130
+	END_IF  shift 131
+	.  error
+
+
+state 99
+	if_statement : IF '(' condition ')' THEN explicit_delimited_execution_block . END_IF '.'  (24)
+	if_statement : IF '(' condition ')' THEN explicit_delimited_execution_block . END_IF  (33)
+	if_statement : IF '(' condition ')' THEN explicit_delimited_execution_block . error '.'  (34)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block . ELSE executional_statements END_IF '.'  (42)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block . ELSE explicit_delimited_execution_block END_IF '.'  (43)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block . ELSE executional_statements END_IF  (61)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block . ELSE executional_statements error '.'  (62)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block . ELSE END_IF '.'  (63)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block . ELSE explicit_delimited_execution_block END_IF  (69)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block . ELSE explicit_delimited_execution_block error '.'  (70)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block . ELSE explicit_delimited_execution_block error END_IF '.'  (71)
+
+	error  shift 132
+	ELSE  shift 133
+	END_IF  shift 134
+	.  error
+
+
+state 100
+	if_else_statement : IF '(' condition ')' executional_statements ELSE . executional_statements END_IF '.'  (48)
+	if_else_statement : IF '(' condition ')' executional_statements ELSE . explicit_delimited_execution_block END_IF '.'  (56)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 135
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 136
+
+
+state 101
+	if_statement : IF '(' condition ')' executional_statements END_IF . '.'  (28)
+
+	'.'  shift 137
+	.  error
+
+
+state 102
+	if_else_statement : IF '(' condition ')' explicit_delimited_execution_block ELSE . executional_statements END_IF '.'  (64)
+	if_else_statement : IF '(' condition ')' explicit_delimited_execution_block ELSE . explicit_delimited_execution_block END_IF '.'  (72)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 138
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 139
+
+
+state 103
+	if_statement : IF '(' condition ')' explicit_delimited_execution_block END_IF . '.'  (35)
+
+	'.'  shift 140
+	.  error
+
+
+state 104
+	if_else_statement : IF condition ')' THEN executional_statements ELSE . executional_statements END_IF '.'  (51)
+	if_else_statement : IF condition ')' THEN executional_statements ELSE . explicit_delimited_execution_block END_IF '.'  (59)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 141
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 142
+
+
+state 105
+	if_statement : IF condition ')' THEN executional_statements END_IF . '.'  (31)
+
+	'.'  shift 143
+	.  error
+
+
+state 106
+	if_else_statement : IF condition ')' THEN explicit_delimited_execution_block ELSE . executional_statements END_IF '.'  (67)
+	if_else_statement : IF condition ')' THEN explicit_delimited_execution_block ELSE . explicit_delimited_execution_block END_IF '.'  (75)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 144
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 145
+
+
+state 107
+	if_statement : IF condition ')' THEN explicit_delimited_execution_block END_IF . '.'  (38)
+
+	'.'  shift 146
+	.  error
+
+
+state 108
+	if_else_statement : '(' condition ')' THEN executional_statements ELSE . executional_statements END_IF '.'  (52)
+	if_else_statement : '(' condition ')' THEN executional_statements ELSE . explicit_delimited_execution_block END_IF '.'  (60)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 147
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 148
+
+
+state 109
+	if_statement : '(' condition ')' THEN executional_statements END_IF . '.'  (32)
+
+	'.'  shift 149
+	.  error
+
+
+state 110
+	if_else_statement : '(' condition ')' THEN explicit_delimited_execution_block ELSE . executional_statements END_IF '.'  (68)
+	if_else_statement : '(' condition ')' THEN explicit_delimited_execution_block ELSE . explicit_delimited_execution_block END_IF '.'  (76)
+
+	IF  shift 2
+	BEGIN  shift 73
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 150
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 151
+
+
+state 111
+	if_statement : '(' condition ')' THEN explicit_delimited_execution_block END_IF . '.'  (39)
+
+	'.'  shift 152
+	.  error
+
+
+state 112
+	explicit_delimited_execution_block : BEGIN execution_block END . '.'  (77)
+
+	'.'  shift 153
+	.  error
+
+
+state 113
+	execution_block : execution_block executional_statements .  (78)
+
+	.  reduce 78
+
+
+state 114
+	if_else_statement : IF '(' ')' THEN executional_statements ELSE executional_statements . END_IF '.'  (50)
+
+	END_IF  shift 154
+	.  error
+
+
+state 115
+	if_else_statement : IF '(' ')' THEN executional_statements ELSE explicit_delimited_execution_block . END_IF '.'  (58)
+
+	END_IF  shift 155
+	.  error
+
+
+state 116
+	if_statement : IF '(' ')' THEN executional_statements END_IF '.' .  (30)
+
+	.  reduce 30
+
+
+state 117
+	if_else_statement : IF '(' ')' THEN explicit_delimited_execution_block ELSE executional_statements . END_IF '.'  (66)
+
+	END_IF  shift 156
+	.  error
+
+
+state 118
+	if_else_statement : IF '(' ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block . END_IF '.'  (74)
+
+	END_IF  shift 157
+	.  error
+
+
+state 119
+	if_statement : IF '(' ')' THEN explicit_delimited_execution_block END_IF '.' .  (37)
+
+	.  reduce 37
+
+
+state 120
+	if_else_statement : IF '(' condition THEN executional_statements ELSE executional_statements . END_IF '.'  (49)
+
+	END_IF  shift 158
+	.  error
+
+
+state 121
+	if_else_statement : IF '(' condition THEN executional_statements ELSE explicit_delimited_execution_block . END_IF '.'  (57)
+
+	END_IF  shift 159
+	.  error
+
+
+state 122
+	if_statement : IF '(' condition THEN executional_statements END_IF '.' .  (29)
+
+	.  reduce 29
+
+
+state 123
+	if_else_statement : IF '(' condition THEN explicit_delimited_execution_block ELSE executional_statements . END_IF '.'  (65)
+
+	END_IF  shift 160
+	.  error
+
+
+state 124
+	if_else_statement : IF '(' condition THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block . END_IF '.'  (73)
+
+	END_IF  shift 161
+	.  error
+
+
+state 125
+	if_statement : IF '(' condition THEN explicit_delimited_execution_block END_IF '.' .  (36)
+
+	.  reduce 36
+
+
+state 126
+	if_else_statement : IF '(' condition ')' THEN ELSE executional_statements . END_IF '.'  (47)
+
+	END_IF  shift 162
+	.  error
+
+
+state 127
+	if_else_statement : IF '(' condition ')' THEN ELSE explicit_delimited_execution_block . END_IF '.'  (55)
+
+	END_IF  shift 163
+	.  error
+
+
+state 128
+	if_statement : IF '(' condition ')' THEN END_IF '.' .  (27)
+
+	.  reduce 27
+
+
+state 129
+	if_statement : IF '(' condition ')' THEN executional_statements error . '.'  (26)
+
+	'.'  shift 164
+	.  error
+
+
+state 130
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE . executional_statements END_IF '.'  (40)
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE . explicit_delimited_execution_block END_IF '.'  (41)
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE . executional_statements END_IF  (44)
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE . executional_statements error '.'  (45)
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE . END_IF '.'  (46)
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE . explicit_delimited_execution_block END_IF  (53)
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE . explicit_delimited_execution_block error '.'  (54)
+
+	IF  shift 2
+	BEGIN  shift 73
+	END_IF  shift 165
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 166
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 167
+
+
+state 131
+	if_statement : IF '(' condition ')' THEN executional_statements END_IF . '.'  (23)
+	if_statement : IF '(' condition ')' THEN executional_statements END_IF .  (25)
+
+	'.'  shift 168
+	$end  reduce 25
+	error  reduce 25
+	ID  reduce 25
+	IF  reduce 25
+	ELSE  reduce 25
+	END  reduce 25
+	END_IF  reduce 25
+	LET  reduce 25
+	':'  reduce 25
+	','  reduce 25
+	'('  reduce 25
+
+
+state 132
+	if_statement : IF '(' condition ')' THEN explicit_delimited_execution_block error . '.'  (34)
+
+	'.'  shift 169
+	.  error
+
+
+state 133
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE . executional_statements END_IF '.'  (42)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE . explicit_delimited_execution_block END_IF '.'  (43)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE . executional_statements END_IF  (61)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE . executional_statements error '.'  (62)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE . END_IF '.'  (63)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE . explicit_delimited_execution_block END_IF  (69)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE . explicit_delimited_execution_block error '.'  (70)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE . explicit_delimited_execution_block error END_IF '.'  (71)
+
+	IF  shift 2
+	BEGIN  shift 73
+	END_IF  shift 170
+	LET  shift 3
+	'('  shift 6
+	.  error
+
+	executional_statements  goto 171
+	if_statement  goto 12
+	if_else_statement  goto 13
+	assignation_statement  goto 14
+	explicit_delimited_execution_block  goto 172
+
+
+state 134
+	if_statement : IF '(' condition ')' THEN explicit_delimited_execution_block END_IF . '.'  (24)
+	if_statement : IF '(' condition ')' THEN explicit_delimited_execution_block END_IF .  (33)
+
+	'.'  shift 173
+	$end  reduce 33
+	error  reduce 33
+	ID  reduce 33
+	IF  reduce 33
+	ELSE  reduce 33
+	END  reduce 33
+	END_IF  reduce 33
+	LET  reduce 33
+	':'  reduce 33
+	','  reduce 33
+	'('  reduce 33
+
+
+state 135
+	if_else_statement : IF '(' condition ')' executional_statements ELSE executional_statements . END_IF '.'  (48)
+
+	END_IF  shift 174
+	.  error
+
+
+state 136
+	if_else_statement : IF '(' condition ')' executional_statements ELSE explicit_delimited_execution_block . END_IF '.'  (56)
+
+	END_IF  shift 175
+	.  error
+
+
+state 137
+	if_statement : IF '(' condition ')' executional_statements END_IF '.' .  (28)
+
+	.  reduce 28
+
+
+state 138
+	if_else_statement : IF '(' condition ')' explicit_delimited_execution_block ELSE executional_statements . END_IF '.'  (64)
+
+	END_IF  shift 176
+	.  error
+
+
+state 139
+	if_else_statement : IF '(' condition ')' explicit_delimited_execution_block ELSE explicit_delimited_execution_block . END_IF '.'  (72)
+
+	END_IF  shift 177
+	.  error
+
+
+state 140
+	if_statement : IF '(' condition ')' explicit_delimited_execution_block END_IF '.' .  (35)
+
+	.  reduce 35
+
+
+state 141
+	if_else_statement : IF condition ')' THEN executional_statements ELSE executional_statements . END_IF '.'  (51)
+
+	END_IF  shift 178
+	.  error
+
+
+state 142
+	if_else_statement : IF condition ')' THEN executional_statements ELSE explicit_delimited_execution_block . END_IF '.'  (59)
+
+	END_IF  shift 179
+	.  error
+
+
+state 143
+	if_statement : IF condition ')' THEN executional_statements END_IF '.' .  (31)
+
+	.  reduce 31
+
+
+state 144
+	if_else_statement : IF condition ')' THEN explicit_delimited_execution_block ELSE executional_statements . END_IF '.'  (67)
+
+	END_IF  shift 180
+	.  error
+
+
+state 145
+	if_else_statement : IF condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block . END_IF '.'  (75)
+
+	END_IF  shift 181
+	.  error
+
+
+state 146
+	if_statement : IF condition ')' THEN explicit_delimited_execution_block END_IF '.' .  (38)
+
+	.  reduce 38
+
+
+state 147
+	if_else_statement : '(' condition ')' THEN executional_statements ELSE executional_statements . END_IF '.'  (52)
+
+	END_IF  shift 182
+	.  error
+
+
+state 148
+	if_else_statement : '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block . END_IF '.'  (60)
+
+	END_IF  shift 183
+	.  error
+
+
+state 149
+	if_statement : '(' condition ')' THEN executional_statements END_IF '.' .  (32)
+
+	.  reduce 32
+
+
+state 150
+	if_else_statement : '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements . END_IF '.'  (68)
+
+	END_IF  shift 184
+	.  error
+
+
+state 151
+	if_else_statement : '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block . END_IF '.'  (76)
+
+	END_IF  shift 185
+	.  error
+
+
+state 152
+	if_statement : '(' condition ')' THEN explicit_delimited_execution_block END_IF '.' .  (39)
+
+	.  reduce 39
+
+
+state 153
+	explicit_delimited_execution_block : BEGIN execution_block END '.' .  (77)
+
+	.  reduce 77
+
+
+state 154
+	if_else_statement : IF '(' ')' THEN executional_statements ELSE executional_statements END_IF . '.'  (50)
+
+	'.'  shift 186
+	.  error
+
+
+state 155
+	if_else_statement : IF '(' ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF . '.'  (58)
+
+	'.'  shift 187
+	.  error
+
+
+state 156
+	if_else_statement : IF '(' ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF . '.'  (66)
+
+	'.'  shift 188
+	.  error
+
+
+state 157
+	if_else_statement : IF '(' ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF . '.'  (74)
+
+	'.'  shift 189
+	.  error
+
+
+state 158
+	if_else_statement : IF '(' condition THEN executional_statements ELSE executional_statements END_IF . '.'  (49)
+
+	'.'  shift 190
+	.  error
+
+
+state 159
+	if_else_statement : IF '(' condition THEN executional_statements ELSE explicit_delimited_execution_block END_IF . '.'  (57)
+
+	'.'  shift 191
+	.  error
+
+
+state 160
+	if_else_statement : IF '(' condition THEN explicit_delimited_execution_block ELSE executional_statements END_IF . '.'  (65)
+
+	'.'  shift 192
+	.  error
+
+
+state 161
+	if_else_statement : IF '(' condition THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF . '.'  (73)
+
+	'.'  shift 193
+	.  error
+
+
+state 162
+	if_else_statement : IF '(' condition ')' THEN ELSE executional_statements END_IF . '.'  (47)
+
+	'.'  shift 194
+	.  error
+
+
+state 163
+	if_else_statement : IF '(' condition ')' THEN ELSE explicit_delimited_execution_block END_IF . '.'  (55)
+
+	'.'  shift 195
+	.  error
+
+
+state 164
+	if_statement : IF '(' condition ')' THEN executional_statements error '.' .  (26)
+
+	.  reduce 26
+
+
+state 165
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE END_IF . '.'  (46)
+
+	'.'  shift 196
+	.  error
+
+
+state 166
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE executional_statements . END_IF '.'  (40)
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE executional_statements . END_IF  (44)
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE executional_statements . error '.'  (45)
+
+	error  shift 197
+	END_IF  shift 198
+	.  error
+
+
+state 167
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block . END_IF '.'  (41)
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block . END_IF  (53)
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block . error '.'  (54)
+
+	error  shift 199
+	END_IF  shift 200
+	.  error
+
+
+state 168
+	if_statement : IF '(' condition ')' THEN executional_statements END_IF '.' .  (23)
+
+	.  reduce 23
+
+
+state 169
+	if_statement : IF '(' condition ')' THEN explicit_delimited_execution_block error '.' .  (34)
+
+	.  reduce 34
+
+
+state 170
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE END_IF . '.'  (63)
+
+	'.'  shift 201
+	.  error
+
+
+state 171
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements . END_IF '.'  (42)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements . END_IF  (61)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements . error '.'  (62)
+
+	error  shift 202
+	END_IF  shift 203
+	.  error
+
+
+state 172
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block . END_IF '.'  (43)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block . END_IF  (69)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block . error '.'  (70)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block . error END_IF '.'  (71)
+
+	error  shift 204
+	END_IF  shift 205
+	.  error
+
+
+state 173
+	if_statement : IF '(' condition ')' THEN explicit_delimited_execution_block END_IF '.' .  (24)
+
+	.  reduce 24
+
+
+state 174
+	if_else_statement : IF '(' condition ')' executional_statements ELSE executional_statements END_IF . '.'  (48)
+
+	'.'  shift 206
+	.  error
+
+
+state 175
+	if_else_statement : IF '(' condition ')' executional_statements ELSE explicit_delimited_execution_block END_IF . '.'  (56)
+
+	'.'  shift 207
+	.  error
+
+
+state 176
+	if_else_statement : IF '(' condition ')' explicit_delimited_execution_block ELSE executional_statements END_IF . '.'  (64)
+
+	'.'  shift 208
+	.  error
+
+
+state 177
+	if_else_statement : IF '(' condition ')' explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF . '.'  (72)
+
+	'.'  shift 209
+	.  error
+
+
+state 178
+	if_else_statement : IF condition ')' THEN executional_statements ELSE executional_statements END_IF . '.'  (51)
+
+	'.'  shift 210
+	.  error
+
+
+state 179
+	if_else_statement : IF condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF . '.'  (59)
+
+	'.'  shift 211
+	.  error
+
+
+state 180
+	if_else_statement : IF condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF . '.'  (67)
+
+	'.'  shift 212
+	.  error
+
+
+state 181
+	if_else_statement : IF condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF . '.'  (75)
+
+	'.'  shift 213
+	.  error
+
+
+state 182
+	if_else_statement : '(' condition ')' THEN executional_statements ELSE executional_statements END_IF . '.'  (52)
+
+	'.'  shift 214
+	.  error
+
+
+state 183
+	if_else_statement : '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF . '.'  (60)
+
+	'.'  shift 215
+	.  error
+
+
+state 184
+	if_else_statement : '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF . '.'  (68)
+
+	'.'  shift 216
+	.  error
+
+
+state 185
+	if_else_statement : '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF . '.'  (76)
+
+	'.'  shift 217
+	.  error
+
+
+state 186
+	if_else_statement : IF '(' ')' THEN executional_statements ELSE executional_statements END_IF '.' .  (50)
+
+	.  reduce 50
+
+
+state 187
+	if_else_statement : IF '(' ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.' .  (58)
+
+	.  reduce 58
+
+
+state 188
+	if_else_statement : IF '(' ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.' .  (66)
+
+	.  reduce 66
+
+
+state 189
+	if_else_statement : IF '(' ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.' .  (74)
+
+	.  reduce 74
+
+
+state 190
+	if_else_statement : IF '(' condition THEN executional_statements ELSE executional_statements END_IF '.' .  (49)
+
+	.  reduce 49
+
+
+state 191
+	if_else_statement : IF '(' condition THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.' .  (57)
+
+	.  reduce 57
+
+
+state 192
+	if_else_statement : IF '(' condition THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.' .  (65)
+
+	.  reduce 65
+
+
+state 193
+	if_else_statement : IF '(' condition THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.' .  (73)
+
+	.  reduce 73
+
+
+state 194
+	if_else_statement : IF '(' condition ')' THEN ELSE executional_statements END_IF '.' .  (47)
+
+	.  reduce 47
+
+
+state 195
+	if_else_statement : IF '(' condition ')' THEN ELSE explicit_delimited_execution_block END_IF '.' .  (55)
+
+	.  reduce 55
+
+
+state 196
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE END_IF '.' .  (46)
+
+	.  reduce 46
+
+
+state 197
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE executional_statements error . '.'  (45)
+
+	'.'  shift 218
+	.  error
+
+
+state 198
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE executional_statements END_IF . '.'  (40)
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE executional_statements END_IF .  (44)
+
+	'.'  shift 219
+	$end  reduce 44
+	error  reduce 44
+	ID  reduce 44
+	IF  reduce 44
+	ELSE  reduce 44
+	END  reduce 44
+	END_IF  reduce 44
+	LET  reduce 44
+	':'  reduce 44
+	','  reduce 44
+	'('  reduce 44
+
+
+state 199
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block error . '.'  (54)
+
+	'.'  shift 220
+	.  error
+
+
+state 200
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF . '.'  (41)
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF .  (53)
+
+	'.'  shift 221
+	$end  reduce 53
+	error  reduce 53
+	ID  reduce 53
+	IF  reduce 53
+	ELSE  reduce 53
+	END  reduce 53
+	END_IF  reduce 53
+	LET  reduce 53
+	':'  reduce 53
+	','  reduce 53
+	'('  reduce 53
+
+
+state 201
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE END_IF '.' .  (63)
+
+	.  reduce 63
+
+
+state 202
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements error . '.'  (62)
+
+	'.'  shift 222
+	.  error
+
+
+state 203
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF . '.'  (42)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF .  (61)
+
+	'.'  shift 223
+	$end  reduce 61
+	error  reduce 61
+	ID  reduce 61
+	IF  reduce 61
+	ELSE  reduce 61
+	END  reduce 61
+	END_IF  reduce 61
+	LET  reduce 61
+	':'  reduce 61
+	','  reduce 61
+	'('  reduce 61
+
+
+state 204
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error . '.'  (70)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error . END_IF '.'  (71)
+
+	END_IF  shift 224
+	'.'  shift 225
+	.  error
+
+
+state 205
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF . '.'  (43)
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF .  (69)
+
+	'.'  shift 226
+	$end  reduce 69
+	error  reduce 69
+	ID  reduce 69
+	IF  reduce 69
+	ELSE  reduce 69
+	END  reduce 69
+	END_IF  reduce 69
+	LET  reduce 69
+	':'  reduce 69
+	','  reduce 69
+	'('  reduce 69
+
+
+state 206
+	if_else_statement : IF '(' condition ')' executional_statements ELSE executional_statements END_IF '.' .  (48)
+
+	.  reduce 48
+
+
+state 207
+	if_else_statement : IF '(' condition ')' executional_statements ELSE explicit_delimited_execution_block END_IF '.' .  (56)
+
+	.  reduce 56
+
+
+state 208
+	if_else_statement : IF '(' condition ')' explicit_delimited_execution_block ELSE executional_statements END_IF '.' .  (64)
+
+	.  reduce 64
+
+
+state 209
+	if_else_statement : IF '(' condition ')' explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.' .  (72)
+
+	.  reduce 72
+
+
+state 210
+	if_else_statement : IF condition ')' THEN executional_statements ELSE executional_statements END_IF '.' .  (51)
+
+	.  reduce 51
+
+
+state 211
+	if_else_statement : IF condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.' .  (59)
+
+	.  reduce 59
+
+
+state 212
+	if_else_statement : IF condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.' .  (67)
+
+	.  reduce 67
+
+
+state 213
+	if_else_statement : IF condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.' .  (75)
+
+	.  reduce 75
+
+
+state 214
+	if_else_statement : '(' condition ')' THEN executional_statements ELSE executional_statements END_IF '.' .  (52)
+
+	.  reduce 52
+
+
+state 215
+	if_else_statement : '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.' .  (60)
+
+	.  reduce 60
+
+
+state 216
+	if_else_statement : '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.' .  (68)
+
+	.  reduce 68
+
+
+state 217
+	if_else_statement : '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.' .  (76)
+
+	.  reduce 76
+
+
+state 218
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE executional_statements error '.' .  (45)
+
+	.  reduce 45
+
+
+state 219
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE executional_statements END_IF '.' .  (40)
+
+	.  reduce 40
+
+
+state 220
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block error '.' .  (54)
+
+	.  reduce 54
+
+
+state 221
+	if_else_statement : IF '(' condition ')' THEN executional_statements ELSE explicit_delimited_execution_block END_IF '.' .  (41)
+
+	.  reduce 41
+
+
+state 222
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements error '.' .  (62)
+
+	.  reduce 62
+
+
+state 223
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE executional_statements END_IF '.' .  (42)
+
+	.  reduce 42
+
+
+state 224
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error END_IF . '.'  (71)
+
+	'.'  shift 227
+	.  error
+
+
+state 225
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error '.' .  (70)
+
+	.  reduce 70
+
+
+state 226
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block END_IF '.' .  (43)
+
+	.  reduce 43
+
+
+state 227
+	if_else_statement : IF '(' condition ')' THEN explicit_delimited_execution_block ELSE explicit_delimited_execution_block error END_IF '.' .  (71)
+
+	.  reduce 71
+
+
+35 terminals, 17 nonterminals
+94 grammar rules, 228 states

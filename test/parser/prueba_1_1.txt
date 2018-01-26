@@ -1,0 +1,4 @@
+[Este caso de prueba da cuenta de las dos posibles definiciones de variables simeples con sus respectivos tipos]
+
+foo:ULONG.
+bar:FLOAT.

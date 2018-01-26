@@ -1,0 +1,47 @@
+[En este archivo se prueban diferentes errores en la sentencia if.]
+
+[if sin '.']
+if (foo > bar) then
+	algo = otracosa.
+end_if
+
+[if sin 'end_if']
+if (foo > bar) then
+	algo = otracosa.
+.
+
+[if sin sentencias de ejecución dentro]
+if (foo > bar) then
+
+end_if.
+
+[if sin then]
+if (foo > bar)
+	algo = otracosa.
+end_if.
+
+[if sin ')']
+if (foo > bar then
+	algo = otracosa.
+end_if.
+
+[if sin condición]
+if () then
+	algo = otracosa.
+end_if.
+
+[if sin '(']
+if foo > bar) then
+	algo = otracosa.
+end_if.
+
+[if sin 'if']
+(foo > bar) then
+	algo = otracosa.
+end_if.
+
+[if con múltiples errores.]
+
+if (foo > bar then
+	algo = otracosa
+end_ig.

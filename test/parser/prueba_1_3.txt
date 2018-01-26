@@ -1,0 +1,11 @@
+[A continuación distintos casos de declaración de variables simples que deben generar errores.]
+
+foo:. [falta el tipo]
+foo:ULONG [falta '.']
+bar ULONG. [falta ':']
+:ULONG. [falta al menos una variable]
+
+[A continuación distintos casos de declaración de variables simples que deben generar errores.]
+
+bar,:FLOAT.
+,foo:ULONG.

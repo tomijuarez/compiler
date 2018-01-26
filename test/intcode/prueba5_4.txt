@@ -1,0 +1,25 @@
+[Estructuras de control con comparación de distintos tipos]
+a:float.
+b:ulong.
+
+
+[if con tipos diferentes en la comparación]
+if (a<>b) then
+	OUT("a es dinstinto de b").
+end_if.
+
+
+[if-else con tipos diferentes en la comparación]
+if (a<b) then
+	OUT("a es mayor que b").
+else
+	OUT("a es mayor o igual que b").
+end_if.
+
+[switch con discriminante de tipo ulong y cases con constantes numéricas de tipo float]
+switch(b) {
+	case ,258:
+		OUT("b es 0.258").
+	case 1,58e10
+		OUT("b es 1.58x10^10").
+}.

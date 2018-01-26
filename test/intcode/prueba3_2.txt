@@ -1,0 +1,8 @@
+[Error en sentencias de asignación LET por shadowing redefiniendo variables con mismo tipo]
+a:float.
+b:ulong.
+
+LET a=5.
+[Error semántico dado que el tipo actual a oscurecer es el mismo que el nuevo.]
+LET b=87.
+LET a=8.

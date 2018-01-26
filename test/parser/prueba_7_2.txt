@@ -1,0 +1,20 @@
+[Este ejemplo da cuenta de distintos casos con errores de la sentencia out.]
+
+[Sin '.']
+OUT("¡Hola, mundo!")
+
+[Sin ')']
+OUT("¡Hola, mundo!".
+
+[Sin cerrar string '"']
+[Acá se cerrará el string después de '.' ya que el lexer llegará a un salto de línea y el string no puede saltar por no tener ..., entonces se descartará el buffer.]
+OUT("¡Hola, mundo!).
+
+[Sin abrir string '"']
+OUT(¡Hola, mundo!").
+
+[Sin '(']
+OUT "¡Hola, mundo!").
+
+[Sin 'OUT']
+("¡Hola, mundo!").

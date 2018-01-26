@@ -1,0 +1,21 @@
+[En este archivo se prueban diferentes formas válidas de la sentencia if.]
+
+[Este ejemplo es el de la sentencia if con una sola sentencia de ejecución.]
+if (variable > 15) then
+	y = 15.
+end_if.
+
+[Este ejemplo es el de la sentencia if con un bloque de ejecución dentro.]
+if (variable >= 44) then
+	begin
+		foo = bar.
+		bar = 44.
+	end.
+end_if.
+
+[Este ejemplo es el de una sentencia if anidada.]
+if(foo == bar) then
+	if(foo > 55) then
+		algo = otracosa.
+	end_if.
+end_if.

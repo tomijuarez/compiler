@@ -1,0 +1,13 @@
+1. Variables auxiliares sólo en operaciones aritméticas o en otros también?
+2. UL_F con un float dentro puede debe error?
+3. UL_F como un término.
+
+PARA HACER:
+1. Constantes de errores semánticos en el parser.
+2. Informe del tp4.
+3. Correcciones y ampliación del tp3 (isConverted, tabla de símbolos con variables auxiliares).
+4. Correción de tp3. Cambio de gramática en regla <term> (UL_F).
+5. Casos de prueba en runtime para chequear límites en ulong y float.
+6. Generar .jar para la máquina virtual.
+7. Probar todos los casos de prueba del tp1 al 4.
+8. Enviar trabajo antes del 11.

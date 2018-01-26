@@ -1,0 +1,13 @@
+[Este ejemplo da cuenta de las formas válidas de la utilización de UL_F.]
+
+[Con identificador como argumento.]
+bar = UL_F(foo).
+
+[Con expresión como argumento.]
+bar = UL_F(algo + foo).
+
+[Con constante como argumento.]
+bar = UL_F(55).
+
+[Como parte de una expresión.]
+bar = UL_F(55) + 1,258e-9.

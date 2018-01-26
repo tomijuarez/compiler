@@ -1,0 +1,3 @@
+[Error semántico por re-definición de variable a]
+a,b,c:ulong.
+a:float.

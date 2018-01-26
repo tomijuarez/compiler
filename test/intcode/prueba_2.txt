@@ -1,0 +1,9 @@
+a,b:float.
+c,d:ulong.
+
+[asignaciones en float]
+a=5,.
+b=a.
+[asignaciones en ulong]
+c=89.
+d=c.

@@ -1,0 +1,22 @@
+[Este ejemplo da cuenta de distintas formas de error en la sentencia UL_F.]
+
+[Sin '.']
+bar = UL_F(55)
+
+[Sin ')']
+bar = UL_F(55.
+
+[Sin expresión dentro]
+bar = UL_F().
+
+[Sin '(']
+bar = UL_F 55).
+
+[Sin UL_F]
+bar = (55).
+
+[Sin '=']
+bar UL_F(55).
+
+[Sin nada en el lado izquierdo]
+UL_F(44).

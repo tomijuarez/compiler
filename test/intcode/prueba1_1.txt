@@ -1,0 +1,5 @@
+[Distintas sentencias declarativas.]
+a:ulong.
+b:float.
+c,d,e:ulong.
+f,g,h:float.

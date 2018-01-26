@@ -1,0 +1,41 @@
+[En este archivo se prueban diferentes formas válidas en la sentencia switch.]
+
+[Sentencia de control switch con una sola sentencia de ejecución en las ramas 'case'.]
+switch(bar) {
+	case 44:
+		algo = otracosa.
+	case 55:
+		bar = foo.
+	case 58:
+		otracosa2 = otracosa.	
+}.
+
+[Sentencia de control switch con bloques de ejecución en las ramas 'case'.]
+switch(bar) {
+	case 44:
+		begin
+			algo = otracosa.
+		end.
+	case 55:
+		begin
+			bar = foo.
+		end.
+	case 58:
+		begin
+			otracosa2 = otracosa.	
+		end.
+}.
+
+[Sentencia de control switch con bloques y una sola sentencia de ejecución (mix) en las ramas 'case'.]
+switch(bar) {
+	case 44:
+		begin
+			algo = otracosa.
+		end.
+	case 55:
+		bar = foo.
+	case 58:
+		begin
+			otracosa2 = otracosa.	
+		end.
+}.

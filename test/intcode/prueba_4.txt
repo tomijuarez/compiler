@@ -1,0 +1,18 @@
+a,b:float.
+c,d:ulong.
+
+[Operaciones varias en float]
+a=5,.
+b=87,2.
+a=a+b.
+b=a-b.
+a=a*a.
+b=b+a/b.
+
+[Operaciones varias en ulong]
+c=5.
+d=87.
+c=c+d.
+d=c-d.
+c=c*c.
+d=d+c/d.

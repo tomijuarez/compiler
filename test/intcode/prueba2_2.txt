@@ -1,0 +1,8 @@
+[Errores en asignación por tipos incompatibles]
+a:float.
+b:ulong.
+
+[asignación de ulong en una variable de tipo float]
+a=89.
+[asignación de float en una variable de tipo ulong]
+b=a.

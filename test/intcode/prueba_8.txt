@@ -1,0 +1,14 @@
+[Conversión explícita UL_F en distintos contextos]
+a:float.
+c:ulong.
+
+c=UL_F(55).
+a=58,98.
+c=UL_F(a).
+c=85.
+
+if (UL_F(c) < 90,0) then
+	OUT("La conversión de c es menor que 90.0").
+end_if.
+
+LET c = UL_F(c).

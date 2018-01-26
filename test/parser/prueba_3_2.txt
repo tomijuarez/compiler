@@ -1,0 +1,76 @@
+[En este archivo se prueban diferentes errores en la sentencia if.]
+
+[if sin '.']
+if (foo > bar) then
+	algo = otracosa.
+else
+	otracosa = algo.
+end_if
+
+[if sin 'end_if']
+if (foo > bar) then
+	algo = otracosa.
+else
+	otracosa = algo.
+.
+
+[if sin sentencias de ejecución dentro]
+if (foo > bar) then
+
+else
+	otracosa = algo.
+end_if.
+
+[if sin then]
+if (foo > bar)
+	algo = otracosa.
+else
+	otracosa = algo.
+end_if.
+
+[if sin ')']
+if (foo > bar then
+	algo = otracosa.
+else
+	otracosa = algo.
+end_if.
+
+[if sin condición]
+if () then
+	algo = otracosa.
+else
+	otracosa = algo.
+end_if.
+
+[if sin '(']
+if foo > bar) then
+	algo = otracosa.
+else
+	otracosa = algo.
+end_if.
+
+[if sin 'if']
+(foo > bar) then
+	algo = otracosa.
+else
+	otracosa = algo.
+end_if.
+
+[if-else sin 'else' se toma como un if pero como no tiene bloque de ejecución y tiene dos sentencias arroja error también.]
+if (foo > bar) then
+	algo = otracosa.
+	otracosa = algo.
+end_if.
+
+[if-else sin sentencias de ejecución en la rama del else.]
+(foo > bar) then
+	algo = otracosa.
+else
+end_if.
+
+[if con múltiples errores.]
+if (foo > bar then
+	algo = otracosa
+else
+	otracosa = algo
+end_ig.

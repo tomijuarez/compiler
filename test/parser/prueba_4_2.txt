@@ -1,0 +1,66 @@
+[En este archivo se prueban diferentes errores en la sentencia switch.]
+
+[Switch sin '.']
+switch(bar) {
+	case 44:
+		algo = otracosa.
+	case 55:
+		bar = foo.
+	case 58:
+		otracosa2 = otracosa.	
+}
+
+[Switch sin '}']
+switch(bar) {
+	case 44:
+		begin
+			algo = otracosa.
+		end.
+	case 55:
+		begin
+			bar = foo.
+		end.
+	case 58:
+		begin
+			otracosa2 = otracosa.	
+		end.
+.
+
+[Switch sin 'case'.]
+switch(bar) {
+}.
+
+[Switch sin bloque ni sentencias de ejecución dentro de 'case']
+switch(bar) {
+	case 55:	
+}.
+
+[Switch sin '{']
+switch(bar)
+	case 55:
+		algo = otracosa.
+}.
+
+[switch sin ')']
+switch(bar {
+	case 66:
+		otracosa = algo.	
+}.
+
+[Switch sin variable de control (variable dentro de los paréntesis)]
+switch() {
+	case 55:
+		otracosa = algo.	
+}.
+
+[Switch sin '(']
+switch bar) {
+	case 55:
+		algo = otracosa.
+}.
+
+[Switch sin 'switch']
+(bar) {
+	case 55:
+		algo = otracosa.	
+}.

@@ -1,0 +1,9 @@
+[Casos de prueba válidos con LET]
+
+[Asignación simple.]
+let y = 25.
+
+[Asignación con expresión]
+let foo = bar + foo + bar*2.
+
+[Las demás formas están probadas en los casos de prueba de asignaciones, debido a que LET posee la regla de expresión.]

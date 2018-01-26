@@ -1,0 +1,50 @@
+[En este archivo se prueban diferentes formas válidas de la sentencia if-else.]
+
+[Este ejemplo es el de la sentencia if-else con una sola sentencia de ejecución en cada rama.]
+if (variable > 15) then
+	y = 15.
+else
+	a = b.
+end_if.
+
+[Este ejemplo es el de la sentencia if-else con un bloque de ejecución dentro de cada rama.]
+if (variable >= 44) then
+	begin
+		foo = bar.
+		bar = 44.
+	end.
+else
+	begin
+		a = b.
+		b = c.
+	end.
+end_if.
+
+[Este ejemplo es el de la sentencia if-else con un bloque de ejecución dentro de la rama del if y una sola ejecución en la rama del else.]
+if(variable >= 44) then
+	begin
+		foo = bar.
+	end.
+else
+	algo = otracosa.
+end_if.
+
+[Este ejemplo es el de la sentencia if-else con una sentencia de ejecución dentro de la rama del if y un bloque de ejecución en la rama del else.]
+if(variable >= 44) then
+	foo = bar.
+else
+	begin
+		algo = otracosa.
+	end.
+end_if.
+
+[Este ejemplo es el de una sentencia if-else anidada en la rama del else.]
+if(foo == bar) then
+	a = b.
+else
+	if(foo > 55) then
+		algo = otracosa.
+	else
+		otracosa = algo.
+	end_if.
+end_if.

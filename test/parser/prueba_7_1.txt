@@ -1,0 +1,3 @@
+[Este ejemplo muestra los casos válidos de la sentencia OUT.]
+
+OUT("¡Hola, mundo!").

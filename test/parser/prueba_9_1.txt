@@ -1,0 +1,4 @@
+[Valor negativo de constante de punto flotante.]
+[-1,22e5 ESTE CASO DEBERÍA DAR ERROR EN PARSER]
+
+variable = -1,22e5.

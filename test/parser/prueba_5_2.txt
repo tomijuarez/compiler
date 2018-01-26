@@ -1,0 +1,20 @@
+[Este caso de prueba da cuenta de asignaciones mal definidas.]
+
+[Falta '.']
+foo = bar
+
+[Falta identificador/constante/expresión en el lado derecho]
+foo = .
+
+[Falta '=', el error se toma como una lista de variables sin una ','
+debido a la regla declarativa.]
+foo bar.
+
+[Falta identificador en el lado izquierdo.]
+= bar.
+
+[Constante en el lado izquierdo.]
+55 = bar.
+
+[Expresión en el lado izquierdo.]
+foo + otracosa = bar.

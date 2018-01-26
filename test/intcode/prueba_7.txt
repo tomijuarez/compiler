@@ -1,0 +1,63 @@
+a:float.
+b:ulong.
+
+a=8,.
+b=57.
+
+[switch con discriminante float con al menos un case verdadero]
+switch(a) {
+	case 1,:
+		OUT("El valor de a es 1.0").
+	case 5,:
+		OUT("El valor de a es 5.0").
+	case 8,:
+		OUT("El valor de a es 8.0").
+}.
+
+[switch con discriminante float sin case verdadero]
+switch(a) {
+	case 1,:
+		OUT("El valor de a es 1.0").
+	case 5,:
+		OUT("El valor de a es 5.0").
+	case 9,:
+		OUT("El valor de a es 9.0").
+}.
+
+[switch con discriminante ulong con al menos un case verdadero]
+switch(b) {
+	case 100:
+		OUT("El valor de a es 100").
+	case 5:
+		OUT("El valor de a es 5").
+	case 57:
+		OUT("El valor de a es 57").
+}.
+
+[switch con discriminante ulong sin case verdadero]
+switch(b) {
+	case 100:
+		OUT("El valor de a es 100").
+	case 5:
+		OUT("El valor de a es 5").
+	case 90:
+		OUT("El valor de a es 90").
+}.
+
+[switches anidados]
+switch(a) {
+	case 1,:
+		OUT("El valor de a es 1.0").
+	case 2,:
+		OUT("El valor de a es 2.0").
+	case 8,:
+		begin
+			OUT("El valor de a es 8.0").
+			switch(b) {
+				case 5:
+					OUT("El valor de b es 5").
+				case 57:
+					OUT("El valor de b es 57").
+			}.
+		end.
+}.

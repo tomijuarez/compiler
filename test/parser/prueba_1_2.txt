@@ -1,0 +1,4 @@
+[Este caso de prueba da cuenta de las definiciones posibles de listas de variables con sus respectivos tipos.]
+
+foo1, bar1, otro: ULONG.
+bar2, foo2:FLOAT.

@@ -1,0 +1,37 @@
+a:float.
+b:ulong.
+
+a=5,.
+b=8.
+
+[if con condición en float verdadera]
+if (a==5,)
+	OUT("El valor de a es 5.0").
+end_if.
+
+[if con condición en float falsa]
+if (a>5,)
+	OUT("El valor de a es mayor que 5.0").
+end_if.
+
+[if con condición en ulong verdadera]
+if (b>=8)
+	OUT("El valor de b es mayor o igual que 8").
+end_if.
+
+[if con condición en ulong falsa]
+if (a<7)
+	OUT("El valor de b es menor que 7").
+end_if.
+
+[if anidados]
+if (a>=5,) then
+	if (a<=5,) then
+		begin
+			OUT("El valor de a es exactamente 5.0").
+			if (b == 8) then
+				OUT("El valor de b es 8").
+			end_if.
+		end.
+	end_if.
+end_if.

@@ -1,0 +1,8 @@
+a:float.
+b:ulong.
+
+LET a=5.
+b=87.
+a=b.
+LET b = 5,88.
+LET b = 8.
